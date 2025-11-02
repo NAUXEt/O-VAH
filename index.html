@@ -9,40 +9,21 @@
     <script src="https://unpkg.com/feather-icons"></script>
     <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
-    <style>
-        .custom-radio input:checked + span {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
-            color: white;
-        }
-        .custom-checkbox input:checked + span {
-            background-color: #3b82f6;
-            border-color: #3b82f6;
-        }
-        #vanta-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            opacity: 0.15;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-50">
     <div id="vanta-bg"></div>
     
     <div class="min-h-screen flex flex-col">
         <!-- Header -->
-        <header class="bg-blue-600 text-white shadow-lg">
+        <header class="bg-indigo-600 text-white shadow-lg">
             <div class="container mx-auto px-4 py-6">
                 <div class="flex justify-between items-center">
                     <div class="flex items-center space-x-2">
                         <i data-feather="bus" class="w-8 h-8"></i>
                         <h1 class="text-2xl font-bold">BusTrackr</h1>
                     </div>
-                    <button id="location-btn" class="flex items-center space-x-1 bg-blue-700 hover:bg-blue-800 px-4 py-2 rounded-lg transition">
+                    <button id="location-btn" class="flex items-center space-x-1 bg-indigo-700 hover:bg-indigo-800 px-4 py-2 rounded-lg transition">
                         <i data-feather="map-pin" class="w-4 h-4"></i>
                         <span>Detect Location</span>
                     </button>
@@ -62,29 +43,33 @@
                         <div>
                             <label class="block text-gray-700 mb-2">What would you like to report?</label>
                             <div class="space-y-3">
-                                <label class="flex items-center space-x-3 cursor-pointer">
-                                    <input type="radio" name="report-type" value="missed" class="hidden" checked>
-                                    <span class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                                        <span class="w-3 h-3 rounded-full bg-transparent"></span>
+                                <input type="radio" name="report-type" value="missed" id="missed-radio" class="hidden" checked>
+                                <label for="missed-radio" class="flex items-center space-x-3 cursor-pointer">
+                                    <span class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+                                    <span class="flex-grow">A bus went past but I'm not sure where it's going</span>
+                                    <span id="missed-selected" class="text-indigo-600 font-medium hidden">
+                                        ✓ Selected
                                     </span>
-                                    <span>A bus went past but I'm not sure where it's going</span>
                                 </label>
                                 
-                                <label class="flex items-center space-x-3 cursor-pointer">
-                                    <input type="radio" name="report-type" value="on-bus" class="hidden">
-                                    <span class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                                        <span class="w-3 h-3 rounded-full bg-transparent"></span>
-                                    </span><span>I'm on a bus that's going to...</span>
+                                <input type="radio" name="report-type" value="on-bus" id="onbus-radio" class="hidden">
+                                <label for="onbus-radio" class="flex items-center space-x-3 cursor-pointer">
+                                    <span class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+                                    <span class="flex-grow">I'm on a bus that's going to...</span>
+                                    <span id="onbus-selected" class="text-indigo-600 font-medium hidden">
+                                        ✓ Selected
+                                    </span>
                                 </label>
                                 
-                                <label class="flex items-center space-x-3 cursor-pointer">
-                                    <input type="radio" name="report-type" value="no-bus" class="hidden">
-                                    <span class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center">
-                                        <span class="w-3 h-3 rounded-full bg-transparent"></span>
+                                <input type="radio" name="report-type" value="no-bus" id="nobus-radio" class="hidden">
+                                <label for="nobus-radio" class="flex items-center space-x-3 cursor-pointer">
+                                    <span class="w-5 h-5 rounded-full border-2 border-gray-300 flex items-center justify-center"></span>
+                                    <span class="flex-grow">There's no bus for... which I have seen go past...</span>
+                                    <span id="nobus-selected" class="text-indigo-600 font-medium hidden">
+                                        ✓ Selected
                                     </span>
-                                    <span>There's no bus for... which I have seen go past...</span>
                                 </label>
-                            </div>
+</div>
                         </div>
 
                         <!-- Dynamic form sections -->
@@ -93,7 +78,7 @@
                             <div id="missed-bus-section" class="space-y-4">
                                 <div>
                                     <label class="block text-gray-700 mb-2">Select your current bus stop</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <select id="bus-stop" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                         <option value="">-- Select Bus Stop --</option>
                                         <option value="1">MORULENG MALL BUS STOP</option>
                                         <option value="2">BAKGATLHA BUS STOP</option>
@@ -113,18 +98,19 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-2">Approximate time bus passed (SAST)</label>
-                                    <input type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <input id="bus-time" type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-2">Additional comments</label>
-                                    <textarea class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500" rows="3" placeholder="Any details about the bus? Color, driver, etc."></textarea>
+                                    <textarea id="bus-comments" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500" rows="3" placeholder="Any details about the bus? Color, driver, etc."></textarea>
                                 </div>
                             </div>
 
                             <!-- On Bus Section (hidden by default) -->
                             <div id="on-bus-section" class="space-y-4 hidden">
                                 <div>
-                                    <label class="block text-gray-700 mb-2">Bus destination</label><select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <label class="block text-gray-700 mb-2">Bus destination</label>
+                                    <select id="bus-destination" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                         <option value="">-- Select Destination --</option>
                                         <option value="sun-city">SUN CITY</option>
                                         <option value="rustenburg">RUSTENBURG</option>
@@ -132,7 +118,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-2">Current bus stop</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <select id="current-bus-stop" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                         <option value="">-- Select Current Bus Stop --</option>
                                         <option value="1">MORULENG MALL BUS STOP</option>
                                         <option value="2">BAKGATLHA BUS STOP</option>
@@ -152,7 +138,7 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-2">Current time (SAST)</label>
-                                    <input type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <input id="on-bus-time" type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
                             </div>
 
@@ -160,7 +146,7 @@
                             <div id="no-bus-section" class="space-y-4 hidden">
                                 <div>
                                     <label class="block text-gray-700 mb-2">Expected destination</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <select id="expected-destination" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                         <option value="">-- Select Destination --</option>
                                         <option value="sun-city">SUN CITY</option>
                                         <option value="rustenburg">RUSTENBURG</option>
@@ -168,9 +154,10 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-2">Your bus stop</label>
-                                    <select class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <select id="no-bus-stop" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                         <option value="">-- Select Bus Stop --</option>
-                                        <option value="1">MORULENG MALL BUS STOP</option><option value="2">BAKGATLHA BUS STOP</option>
+                                        <option value="1">MORULENG MALL BUS STOP</option>
+                                        <option value="2">BAKGATLHA BUS STOP</option>
                                         <option value="3">NEXT TITUS SHOP BUS STOP</option>
                                         <option value="4">MOLATE BUS STOP</option>
                                         <option value="5">MABODISA BUS STOP</option>
@@ -187,13 +174,13 @@
                                 </div>
                                 <div>
                                     <label class="block text-gray-700 mb-2">Time you arrived at stop (SAST)</label>
-                                    <input type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500">
+                                    <input id="arrival-time" type="time" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
                                 </div>
                             </div>
                         </div>
 
                         <div class="pt-4">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center space-x-2">
+                            <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-3 px-4 rounded-lg transition flex items-center justify-center space-x-2">
                                 <i data-feather="send" class="w-4 h-4"></i>
                                 <span>Submit Report</span>
                             </button>
@@ -206,63 +193,12 @@
             <div class="max-w-3xl mx-auto mt-8 bg-white rounded-xl shadow-md overflow-hidden">
                 <div class="p-6">
                     <h2 class="text-xl font-semibold text-gray-800 mb-4">Recent Bus Reports</h2>
-                    <div class="space-y-4">
-                        <!-- Report Item -->
-                        <div class="border-b border-gray-200 pb-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-medium text-blue-600">Moruleng Mall Bus Stop</h3>
-                                    <p class="text-gray-600">Bus to Sun City passed at 06:15 (expected 06:00)</p>
-                                    <p class="text-sm text-gray-500 mt-1">Reported 15 mins ago</p>
-                                </div>
-                                <button class="text-blue-500 hover:text-blue-700">
-                                    <i data-feather="message-square" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                            <div class="mt-2 text-sm bg-gray-50 p-2 rounded hidden">
-                                <p class="font-medium">Comments:</p>
-                                <div class="mt-1">
-                                    <div class="flex items-start space-x-2">
-                                        <img src="http://static.photos/people/200x200/1" class="w-6 h-6 rounded-full" alt="User">
-                                        <div>
-                                            <p class="font-medium">Thabo:</p><p>That was probably the 06:00 bus, it's often late</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Report Item -->
-                        <div class="border-b border-gray-200 pb-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-medium text-blue-600">U-Save Lerome</h3>
-                                    <p class="text-gray-600">No bus to Rustenburg since 05:45 (waited 30 mins)</p>
-                                    <p class="text-sm text-gray-500 mt-1">Reported 22 mins ago</p>
-                                </div>
-                                <button class="text-blue-500 hover:text-blue-700">
-                                    <i data-feather="message-square" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </div>
-                        
-                        <!-- Report Item -->
-                        <div class="border-b border-gray-200 pb-4">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="font-medium text-blue-600">Currently on bus</h3>
-                                    <p class="text-gray-600">Bus to Sun City just passed Letsheng Bus Stop at 07:05</p>
-                                    <p class="text-sm text-gray-500 mt-1">Reported 5 mins ago</p>
-                                </div>
-                                <button class="text-blue-500 hover:text-blue-700">
-                                    <i data-feather="message-square" class="w-4 h-4"></i>
-                                </button>
-                            </div>
-                        </div>
+                    <div class="space-y-4" id="reports-container">
+                        <!-- Reports will be loaded here via JavaScript -->
                     </div>
                     
                     <div class="mt-4 text-center">
-                        <button class="text-blue-600 hover:text-blue-800 font-medium">
+                        <button class="text-indigo-600 hover:text-indigo-800 font-medium">
                             View all reports
                         </button>
                     </div>
@@ -282,13 +218,13 @@
                         <p class="text-sm text-gray-400 mt-1">Never miss your bus again</p>
                     </div>
                     <div class="flex space-x-6">
-                        <a href="#" class="hover:text-blue-400 transition">
+                        <a href="#" class="hover:text-indigo-400 transition">
                             <i data-feather="help-circle" class="w-5 h-5"></i>
                         </a>
-                        <a href="#" class="hover:text-blue-400 transition">
+                        <a href="#" class="hover:text-indigo-400 transition">
                             <i data-feather="info" class="w-5 h-5"></i>
                         </a>
-                        <a href="#" class="hover:text-blue-400 transition">
+                        <a href="#" class="hover:text-indigo-400 transition">
                             <i data-feather="mail" class="w-5 h-5"></i>
                         </a>
                     </div>
@@ -298,27 +234,9 @@
                 </div>
             </div>
         </footer>
-    </div><script>
-        // Initialize Vanta.js background
-        VANTA.NET({
-            el: "#vanta-bg",
-            mouseControls: true,
-            touchControls: true,
-            gyroControls: false,
-            minHeight: 200.00,
-            minWidth: 200.00,
-            scale: 1.00,
-            scaleMobile: 1.00,
-            color: 0x3b82f6,
-            backgroundColor: 0xf8fafc,
-            points: 10.00,
-            maxDistance: 22.00,
-            spacing: 18.00
-        });
-
-        // Initialize feather icons
-        feather.replace();
-
-        // Handle report type selection
-        const reportTypeRadios = document.querySelectorAll('input[name="report-type"]');
-        const missedBusSection = document.getElementById('missed-bus-section');
+    </div>
+    <realtime-updates></realtime-updates>
+    <script src="components/realtime-updates.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
